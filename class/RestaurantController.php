@@ -1,48 +1,47 @@
 <?php
 
 class RestaurantController {
-	
-	private $mysqli = null; 
-	
+
+	private $mysqli = null;
+
 	function RestaurantController() {
 		$this->mysqli = DbConnection::getInstance();
-		
 	}
-	
+
 	public function getAllResturant($limit){
 		$restaurants = array();
-		
-		$query = "SELECT 
+
+		$query = "SELECT
 								*,
-								restaurant.name AS rest_name, 
-								restauranttype.name AS typename, 
-								city.name AS cityname 
-						FROM 
-								restaurant 
-						INNER JOIN 
-								restauranttype_join_restaurant 
+								restaurant.name AS rest_name,
+								restauranttype.name AS typename,
+								city.name AS cityname
+						FROM
+								restaurant
+						INNER JOIN
+								restauranttype_join_restaurant
 						ON (
 								restaurant.id = restauranttype_join_restaurant.restaurant_id
-							) 
-						INNER JOIN 
-								restauranttype 
+							)
+						INNER JOIN
+								restauranttype
 						ON (
 								restauranttype_join_restaurant.restauranttype_id = restauranttype.id
-							) 
-						INNER JOIN 
-							city 
+							)
+						INNER JOIN
+							city
 						ON (
 							city.id = restaurant.city
-						) 
-						WHERE 
-							restaurant.latitude <> 0 
-						AND 
+						)
+						WHERE
+							restaurant.latitude <> 0
+						AND
 							restaurant.longitude <> 0
 						";
 		if($limit) {
 			$query .= ' LIMIT ' . $limit;
 		}
-	
+
 	//	$query = "SELECT * FROM restaurant WHERE latitude <> 0 AND longitude <> 0";
 		$result = $this->mysqli->query($query);
 		while ($row = $result->fetch_object()) {
@@ -57,41 +56,41 @@ class RestaurantController {
 			$restaurant->setHas_breakfast($row->hasbreakfast);
 			$restaurant->setHas_dinner($row->hasdinner);
 			$restaurant->setHas_lunch($row->haslunch);
-			$restaurant->setHittaURL($row->hittaURL);
+			$restaurant->setHittaURL($row->hittaURI);
 			$restaurant->setMail_city($row->mailcity);
 			$restaurant->setPhone($row->phone);
 			$restaurant->setStreet($row->street);
 			$restaurant->setType($row->typename);
 			$restaurant->setZip($row->zipcode);
-			
+
 			$restaurants[] = $restaurant;
 		}
 		unset($result);
 		unset($row);
-		
+
 		return $restaurants;
-		
+
 	}
-	
+
 	/*
 	 * This method is used when a user has added a restaurant
-	 * 
+	 *
 	 *	Dont forget to add a query for type!
 	 */
 	public function saveNewRestaurant(restaurant $res){
 		$city = $res->getCity();
-		if ($city == 'göteborg' || $city == 'goteborg' || $city == 'Göteborg'){
+		if ($city == 'gï¿½teborg' || $city == 'goteborg' || $city == 'Gï¿½teborg'){
 			$city = 'gothenburg';
 		}
 		$res->setCity($city);
 		/*
 		 * This is if we're going to add a search before the insert to check if the rest exists
 		$query = "SELECT id FROM restaurant WHERE name ='{$res->getName()}' LIMIT 1";
-		
+
 		var_dump($this->mysqli->query($query)); die();
 		if (null == $this->mysqli->query($query)){
 			var_dump($this->mysqli->query($query)); die();
-			
+
 				die($this->mysqli->error);
 				return false;}
 			else {
@@ -112,21 +111,21 @@ class RestaurantController {
 		} else {
 			$res->setCity($row->id);
 			$query = sprintf("INSERT INTO restaurant(
-											
+
 				name,
 				city,
 				zipcode,
-				street, 
+				street,
 				phone,
 				fax,
 				website,
-				latitude, 
+				latitude,
 				longitude,
 				hasbreakfast,
 				haslunch,
 				hasdinner,
 				approved
-				
+
 				)VALUES (
 				'%s',
 				'%d',
@@ -141,7 +140,7 @@ class RestaurantController {
 				'%d',
 				'%d',
 				'%d'
-											
+
 				)",
 				$res->getName(),
 				$res->getCity(),
@@ -155,9 +154,9 @@ class RestaurantController {
 				$res->getHas_breakfast(),
 				$res->getHas_lunch(),
 				$res->getHas_dinner(),
-				1							
+				1
 				);
-				
+
 				if (!$this->mysqli->query($query)) {
 					die($this->mysqli->error);
 				} else {
@@ -166,15 +165,15 @@ class RestaurantController {
 					$query = "SELECT id FROM restauranttype WHERE name = '{$res->getType()}' LIMIT 1";
 					$result = $this->mysqli->query($query);
 					$row = $result->fetch_object();
-				
+
 					if(null == $row->id) {
 						echo "We do not support this type yet, plz come back later.";
 						return false;
 					} else {
 						$query = sprintf("INSERT INTO restauranttype_join_restaurant (
-						restauranttype_id, 
+						restauranttype_id,
 						restaurant_id
-						
+
 						) VALUES (
 						'%d',
 						'%d'
@@ -182,19 +181,19 @@ class RestaurantController {
 						$row->id,
 						$rest_id
 						);
-						
+
 						if (!$this->mysqli->query($query)) {
 							die($this->mysqli->error);
 						} else {
 							return true;
 						}
-						
+
 					}
-					
+
 				}
 		}
 	}
-	
+
 	/*
 	 * This method is used to get ONE restaurant by name
 	 * now its used together with adding a restaurant - noot anymore
@@ -203,7 +202,7 @@ class RestaurantController {
 	 */
 	public function getOneRestaurant($name){
 		$query = "SELECT r.*, c.name as city_name FROM restaurant r JOIN city c ON r.city = c.id WHERE r.name ='{$name}' ";
-		
+
 		$result = $this->mysqli->query($query);
 		while ($row = $result->fetch_object()) {
 			$restaurant = new Restaurant();
@@ -223,26 +222,26 @@ class RestaurantController {
 			$restaurant->setStreet($row->street);
 			$restaurant->setType($row->type_name);
 			$restaurant->setZip($row->zipcode);
-			
+
 		}
 		unset($result);
 		unset($row);
-		
+
 		return $restaurant;
 	}
-	
+
 	/*
 	 * This method could be used to approve a restaurant
 	 * not sure yet..
-	 *	
+	 *
 	 */
 	public function approveNewRestaurant(restaurant $res){
-		
+
 		$query = sprintf("INSERT INTO restaurant(
-											
-											latitude, 
-											longitude, 
-											image, 
+
+											latitude,
+											longitude,
+											image,
 											link,
 											approved
 										)VALUES (
@@ -259,15 +258,15 @@ class RestaurantController {
 											$res->getLink(),
 											$res->getApproved()
 					);
-					
+
 		if (!$this->mysqli->query($query))
 			die($this->mysqli->error);
-		
+
 	}
-	
+
 	/*
 	 * This method is used to get a list of all new restaurants in db
-	 *	
+	 *
 	 */
 	public function getNotApprovedRestaurants() {
 		$query = "SELECT * FROM restaurant WHERE approved = 1";
@@ -297,8 +296,8 @@ class RestaurantController {
 		}
 		return $rest_list;
 	}
-	
-	
+
+
 	public function isNewrestaurant(restaurant $res){
 		$query = "SELECT id FROM restaurant WHERE latitude ='{$res->getLat()}' AND longitude = '{$res->getLong()}' LIMIT 1";
 		if (!$result = $this->mysqli->query($query))
@@ -307,13 +306,13 @@ class RestaurantController {
 			if ($this->mysqli->affected_rows == 0) {
 				return true;
 			}
-			
+
 		}
 		return false;
-		
+
 	}
-	
-	
+
+
 }
 
 
