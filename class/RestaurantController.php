@@ -8,7 +8,7 @@ class RestaurantController {
 		$this->mysqli = DbConnection::getInstance();
 	}
 
-	public function getAllResturant($limit){
+	public function getAllResturant($limit = null){
 		$restaurants = array();
 
 		$query = "SELECT

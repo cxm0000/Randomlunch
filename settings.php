@@ -11,7 +11,7 @@
 	define('DB_PASSWORD', 'ming');
 //	define('DB_CHOSEN', 'randomlu_randomlunch');
 	define('DB_CHOSEN', 'randomlunch');
-	define('VALID_RANGE', 30);	//5 kilometers
+	define('VALID_RANGE', 1);	//5 kilometers
 
 	define("MAP_BASE_URL", "http://maps.google.com/maps/geo");
 	define("MAP_KEY", "ABQIAAAAZ4js3UVwf9LegxeHjyaWzxRFY7V_zappoRjfJmHN1m_LIwFKTRSkqZWo8dPAs-Zszfc7lWpKY6Jp4w");
