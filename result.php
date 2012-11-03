@@ -1,40 +1,36 @@
 <?php
-	session_start();
-	include_once ("settings.php");
-	include_once (SERVER_ROOT. "/class/DbConnection.php");
-	include_once (SERVER_ROOT. "/class/Randomizer.php");
-	include_once (SERVER_ROOT. "/class/Restaurant.php");
-	include_once (SERVER_ROOT. "/class/RestaurantController.php");
-	include_once (SERVER_ROOT. "/class/Calculator.php");
-	include_once (SERVER_ROOT. "/class/Location.php");
-	include_once (SERVER_ROOT."/include/header.php");
-
-
+session_start();
+include_once ("settings.php");
+include_once (SERVER_ROOT . "/class/DbConnection.php");
+include_once (SERVER_ROOT . "/class/Randomizer.php");
+include_once (SERVER_ROOT . "/class/Restaurant.php");
+include_once (SERVER_ROOT . "/class/RestaurantController.php");
+include_once (SERVER_ROOT . "/class/Calculator.php");
+include_once (SERVER_ROOT . "/class/Location.php");
+include_once (SERVER_ROOT . "/include/header.php");
 ?>
- <script type="text/javascript">
+<script type="text/javascript">
 
-    var geocoder, location1, location2;
+	var geocoder, location1, location2;
 
 	function initialize() {
 
 		<?php
-			if (isset($_SESSION['rest'])){
-				//var_dump($_SESSION['from']);die;
-				$restaurant = unserialize($_SESSION['rest']);
-				$from = unserialize($_SESSION['from']);
-				//var_dump($from);
-				//var_dump($from->getLongitude());
-				//var_dump($restaurant);die;
-				echo "showResult({$from->getLongitude()}, {$from->getLatitude()}, {$restaurant->getLongitude()}, {$restaurant->getLatitude()});";
-				//echo "showResult(11.9551420211792, 57.69321977978046, {$restaurant->getLatitude()}, {$restaurant->getLongitude()});";
-			}
+		if (isset($_SESSION['rest'])) {
+			//var_dump($_SESSION['from']);die;
+			$restaurant = unserialize($_SESSION['rest']);
+			$from = unserialize($_SESSION['from']);
+			//var_dump($from);
+			//var_dump($from->getLongitude());
+			//var_dump($restaurant);die;
+			echo "showResult({$from->getLongitude()}, {$from->getLatitude()}, {$restaurant->getLongitude()}, {$restaurant->getLatitude()});";
+			//echo "showResult(11.9551420211792, 57.69321977978046, {$restaurant->getLatitude()}, {$restaurant->getLongitude()});";
+		}
 		?>
-		//getDirections();
+			   //getDirections();
 	}
 
-
-	function showResult(location1_lat, location1_lon, location2_lat, location2_lon)
-	{
+	function showResult(location1_lat, location1_lon, location2_lat, location2_lon) {
 		try
 		{
 
@@ -49,26 +45,26 @@
 			var defaultTravelMode = "walking";
 			var defaultLocale = "sv_SE";
 
-			 map = new GMap2(document.getElementById("map_canvas"));
-			 map.setCenter(glatlng2, 13);
+			map = new GMap2(document.getElementById("map_canvas"));
+			map.setCenter(glatlng2, 13);
 
-			 directions = new GDirections(map, null);
-		/*	 GEventListener listener = GEvent.addListener(directions, 'load',new
-					 GEventHandler(){
-				//using prototype, u can use any other to attach event
-				alert(directions.getDistance().meters);
-				//display results
-				});
-		*/
+			directions = new GDirections(map, null);
+			/*	 GEventListener listener = GEvent.addListener(directions, 'load',new
+			 GEventHandler(){
+		//using prototype, u can use any other to attach event
+		alert(directions.getDistance().meters);
+		//display results
+		});
+			 */
 			var gString = 'from: ' + location1_lon +',' + location1_lat + ' to:' + location2_lon +',' + location2_lat;
 
-//			 var gString = 'from: <?=$_SESSION['location']?>, sweden to:<?=(isset($restaurant))? $restaurant->getStreet(): ''?>, sweden';
+			//			 var gString = 'from: <?= $_SESSION['location'] ?>, sweden to:<?= (isset($restaurant)) ? $restaurant->getStreet() : '' ?>, sweden';
 
-			 var queryOptions = {"locale": defaultLocale, "travelMode": defaultTravelMode};
+			var queryOptions = {"locale": defaultLocale, "travelMode": defaultTravelMode};
 
 			directions.load(gString, queryOptions);
 
-			 map.setUIToDefault();
+			map.setUIToDefault();
 
 		}
 		catch (error)
@@ -77,62 +73,63 @@
 		}
 	}
 
-    </script>
+</script>
 
-	<body onload="initialize()">
+<body onload="initialize()">
 
-		<div id="top">
-			<div class="center">
-				<?php
-					if(isset($restaurant)) {
-				?>
+	<div id="top">
+		<div class="center">
+<?php
+if (isset($restaurant)) {
+	?>
 
 				<div>
-					<a href="prototype.php"><img id="confused_smiley" src="image/site/smiley_blue_happy.png" alt="confused" /></a>
+					<a href="prototype.php"><img id="confused_smiley" src="image/site/smiley_blue_happy.png" alt="confused"></a>
 					<div id="front">
 						<h2>We think you should go here - </h2>
 						<div id="result">
 							<table>
-							<tr>
-								<td class="header">Name</td><td><?php echo $restaurant->getName() ?></td>
-							</tr>
-							<tr>
-								<td class="header">City</td><td><?php echo $restaurant->getMail_City() ?></td>
-							</tr>
-							<tr>
-								<td class="header">Type</td><td><?php echo $restaurant->getType() ?></td>
-							</tr>
-							<tr>
-								<td class="header">Phone</td><td><?php echo $restaurant->getPhone() ?></td>
-							</tr>
-							<? $site=$restaurant->getWebsite();?>
-							<? if(!empty($site)):?>
-							<tr>
-								<td class="header">Web</td><td><?php echo $site ?></td>
-							</tr>
-							<? endif;?>
+								<tr>
+									<td class="header">Name</td><td><?php echo $restaurant->getName() ?></td>
+								</tr>
+								<tr>
+									<td class="header">City</td><td><?php echo $restaurant->getMail_City() ?></td>
+								</tr>
+								<tr>
+									<td class="header">Type</td><td><?php echo $restaurant->getType() ?></td>
+								</tr>
+								<tr>
+									<td class="header">Phone</td><td><?php echo $restaurant->getPhone() ?></td>
+								</tr>
+								<? $site = $restaurant->getWebsite(); ?>
+								<? if (!empty($site)): ?>
+									<tr>
+										<td class="header">Web</td><td><?php echo $site ?></td>
+									</tr>
+								<? endif; ?>
 							</table>
-							<br />
-							<br />
+							<br>
+							<br>
 							<p>____________________________</p>
-							<br />
+							<br>
 							<p class="header">I don't like it, give me a new one -</p>
-							<br />
+							<br>
 							<form action="gen2.php" method="get">
-								<input id="input_query" type="text" style="display:none" name="location" value="<?php echo $_SESSION['location']; ?>" />
-								<input id="btn_getLunchPlace" type="submit" value="" />
+								<input id="input_query" type="text" style="display:none" name="location" value="<?php echo $_SESSION['location']; ?>">
+								<input id="btn_getLunchPlace" type="submit" value="">
 							</form>
 						</div>
 					</div>
 				</div>
-			<?php }
-				else{
-						print '<p id="result">' . $_SESSION['result'] . '</p>';
-					}
-			?>
-			</div>
+<?php
+}
+else {
+	print '<p id="result">' . $_SESSION['result'] . '</p>';
+}
+?>
 		</div>
-	<?php if(!isset($_SESSION['result']) && isset($restaurant)):?>
+	</div>
+	<?php if (!isset($_SESSION['result']) && isset($restaurant)): ?>
 		<div id="bottom">
 			<div class="center">
 				<p class="map_result">The map shows you how to drive to the restaurant.</p>
@@ -142,8 +139,8 @@
 		</div>
 
 	</body>
-</html>
-	<?php else:?>
-	<?php include_once("include/bottom.php");?>
-	<?php unset($_SESSION['result']);?>
-	<?php endif;?>
+	</html>
+<?php else: ?>
+	<?php include_once("include/bottom.php"); ?>
+	<?php unset($_SESSION['result']); ?>
+<?php endif; ?>
