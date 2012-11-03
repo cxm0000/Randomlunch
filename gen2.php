@@ -27,7 +27,6 @@
 		##get all restaurants
 		$all_rests = $restController->getAllResturant();
 
-		echo '___________';
 		$searchGeoLocation = new Location($searchLocation);
 
 		##check if there are coordinates of the location
@@ -48,9 +47,7 @@
 					$restaurant->getLatitude(),
 					$restaurant->getLongitude()
 				);
-//				$distance = Calculator::routeDistance($fromGeoLocation, $toGeoLocation);
 
-//				echo '<br>'.$restaurant->getName() . ':'. $distance;
 				if ($distance <= VALID_RANGE && $distance > 0){
 					$restaurant->setDistance($distance);
 					$possible_rests[] = $restaurant;
@@ -73,8 +70,7 @@
 				$_SESSION['result'] = 'Sorry, we can not find any restaurant within ' .VALID_RANGE . ' km, please try specify your address more detailed.';
 		}else
 			$_SESSION['result'] = 'Sorry, we can not locate the location that you provided, please try specify it more detailed.';
-//	var_dump($possible_rests);
-//		die;
+
 		//redirect to the display page
 		header("location: result.php");
 	}

@@ -12,37 +12,36 @@ class RestaurantController {
 		$restaurants = array();
 
 		$query = "SELECT
-								*,
-								restaurant.name AS rest_name,
-								restauranttype.name AS typename,
-								city.name AS cityname
-						FROM
-								restaurant
-						INNER JOIN
-								restauranttype_join_restaurant
-						ON (
-								restaurant.id = restauranttype_join_restaurant.restaurant_id
-							)
-						INNER JOIN
-								restauranttype
-						ON (
-								restauranttype_join_restaurant.restauranttype_id = restauranttype.id
-							)
-						INNER JOIN
-							city
-						ON (
-							city.id = restaurant.city
-						)
-						WHERE
-							restaurant.latitude <> 0
-						AND
-							restaurant.longitude <> 0
-						";
+						*,
+						restaurant.name AS rest_name,
+						restauranttype.name AS typename,
+						city.name AS cityname
+				FROM
+						restaurant
+				INNER JOIN
+						restauranttype_join_restaurant
+				ON (
+						restaurant.id = restauranttype_join_restaurant.restaurant_id
+					)
+				INNER JOIN
+						restauranttype
+				ON (
+						restauranttype_join_restaurant.restauranttype_id = restauranttype.id
+					)
+				INNER JOIN
+					city
+				ON (
+					city.id = restaurant.city
+				)
+				WHERE
+					restaurant.latitude <> 0
+				AND
+					restaurant.longitude <> 0
+		";
 		if($limit) {
 			$query .= ' LIMIT ' . $limit;
 		}
 
-	//	$query = "SELECT * FROM restaurant WHERE latitude <> 0 AND longitude <> 0";
 		$result = $this->mysqli->query($query);
 		while ($row = $result->fetch_object()) {
 			$restaurant = new Restaurant();

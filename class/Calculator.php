@@ -3,25 +3,6 @@
 class Calculator
 {
 
-//	static function distanceFromCoordinates(Array $from, Array $to){
-//
-//		$lat1 = $from[0];
-//		$lon1 = $from[1];
-//
-//		$lat2 = $to[0];
-//		$lon2 = $to[1];
-//
-////		$lat1 = $from[1];
-////		$lon1 = $from[0];
-////
-////		$lat2 = $to[1];
-////		$lon2 = $to[0];
-//
-//		$distance = (3958*3.1415926*sqrt(($lat2-$lat1)*($lat2-$lat1) + cos($lat2/57.29578)*cos($lat1/57.29578)*($lon2-$lon1)*($lon2-$lon1))/180);
-//echo PHP_EOL . $distance;
-//		return $distance;
-//	}
-
 	static function distanceFromCoordinates($lat1, $lng1, $lat2, $lng2)
 	{
 //		echo PHP_EOL . "lat1: " . $lat1 . ' -- lng1: ' . $lng1;
@@ -38,7 +19,7 @@ class Calculator
 		$a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin($dlng / 2) * sin($dlng / 2);
 		$c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 		$km = $r * $c;
-		
+
 		return $km;
 	}
 
