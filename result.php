@@ -7,8 +7,24 @@ include_once (SERVER_ROOT . "/class/Restaurant.php");
 include_once (SERVER_ROOT . "/class/RestaurantController.php");
 include_once (SERVER_ROOT . "/class/Calculator.php");
 include_once (SERVER_ROOT . "/class/Location.php");
-include_once (SERVER_ROOT . "/include/header.php");
 ?>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Random Lunch</title>
+	 	<meta charset="UTF-8" />
+		<meta name="author" content="randomlunch.se">
+		<meta name="description" content="Randomlunch is a place where a random lunch restaurant suggestion will be made depending on your current location. Now the service is only available in Sweden.">
+		<meta name="keywords" content="random lunch, lunch confused, where to eat, what for lunch, random restaurant, lunch suggestion">
+		<meta name="publisher" content="randomlunch.se">
+		<meta name="revisit-after" content="2 days">
+		<meta name="robots" content="index, follow">
+		<link rel="stylesheet" type="text/css" href="<?=WEB_ROOT?>/css/style.css" media="all">
+		<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAZ4js3UVwf9LegxeHjyaWzxRFY7V_zappoRjfJmHN1m_LIwFKTRSkqZWo8dPAs-Zszfc7lWpKY6Jp4w" type="text/javascript"></script>
+		<!-- According to the Google Maps API Terms of Service you are required display a Google map when using the Google Maps API. see: http://code.google.com/apis/maps/terms.html -->
+    	<script type="text/javascript" src="<?=WEB_ROOT?>/js/script.js"></script>
+
 <script type="text/javascript">
 
 	var geocoder, location1, location2;
@@ -42,7 +58,7 @@ include_once (SERVER_ROOT . "/include/header.php");
 			var miledistance = glatlng1.distanceFrom(glatlng2, 3959).toFixed(1);
 			var kmdistance = (miledistance * 1.609344).toFixed(1);
 
-			var defaultTravelMode = "walking";
+			var defaultTravelMode = "G_TRAVEL_MODE_WALKING";
 			var defaultLocale = "sv_SE";
 
 			map = new GMap2(document.getElementById("map_canvas"));
@@ -75,6 +91,7 @@ include_once (SERVER_ROOT . "/include/header.php");
 
 </script>
 
+</head>
 <body onload="initialize()">
 
 	<div id="top">

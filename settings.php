@@ -15,6 +15,6 @@
 
 	define("MAP_BASE_URL", "http://maps.google.com/maps/geo");
 	define("MAP_KEY", "ABQIAAAAZ4js3UVwf9LegxeHjyaWzxRFY7V_zappoRjfJmHN1m_LIwFKTRSkqZWo8dPAs-Zszfc7lWpKY6Jp4w");
-
+	define("ADMIN_EMAIL", "ming.cxm@gmail.com");
 
 ?>

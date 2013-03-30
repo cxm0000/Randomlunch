@@ -76,9 +76,9 @@ class RestaurantController {
 	 *
 	 *	Dont forget to add a query for type!
 	 */
-	public function saveNewRestaurant(restaurant $res){
-		$city = $res->getCity();
-		if ($city == 'g�teborg' || $city == 'goteborg' || $city == 'G�teborg'){
+	public function saveNewRestaurant(Restaurant $res){
+		$city = strtolower($res->getCity());
+		if ($city == 'göteborg' || $city == 'goteborg' || $city == 'gÃ–teborg'){
 			$city = 'gothenburg';
 		}
 		$res->setCity($city);
@@ -105,7 +105,7 @@ class RestaurantController {
 		$row = $result->fetch_object();
 
 		if(null == $row->id) {
-			echo "We do not support this city yet, plz come back later.";
+			echo "We do not support this city yet, plz come back later. City name:" . $city;
 			return false;
 		} else {
 			$res->setCity($row->id);
@@ -123,8 +123,8 @@ class RestaurantController {
 				hasbreakfast,
 				haslunch,
 				hasdinner,
-				approved
-
+				approved,
+				hittaId
 				)VALUES (
 				'%s',
 				'%d',
@@ -138,7 +138,8 @@ class RestaurantController {
 				'%d',
 				'%d',
 				'%d',
-				'%d'
+				'%d',
+				'%s'
 
 				)",
 				$res->getName(),
@@ -153,7 +154,8 @@ class RestaurantController {
 				$res->getHas_breakfast(),
 				$res->getHas_lunch(),
 				$res->getHas_dinner(),
-				1
+				1,
+				$res->getHittaId()
 				);
 
 				if (!$this->mysqli->query($query)) {
@@ -166,7 +168,7 @@ class RestaurantController {
 					$row = $result->fetch_object();
 
 					if(null == $row->id) {
-						echo "We do not support this type yet, plz come back later.";
+						echo "We do not support this type yet, plz come back later. Type name:" . $res->getType();
 						return false;
 					} else {
 						$query = sprintf("INSERT INTO restauranttype_join_restaurant (
@@ -297,7 +299,7 @@ class RestaurantController {
 	}
 
 
-	public function isNewrestaurant(restaurant $res){
+	public function isNewrestaurant(Restaurant $res){
 		$query = "SELECT id FROM restaurant WHERE latitude ='{$res->getLat()}' AND longitude = '{$res->getLong()}' LIMIT 1";
 		if (!$result = $this->mysqli->query($query))
 			die($this->mysqli->error);
@@ -311,7 +313,74 @@ class RestaurantController {
 
 	}
 
+	/**
+	 * when running the import restaurants script, this checks if a restaurant has already been importted before or not
+	 *
+	 * @param Restaurant $res
+	 * @return boolean
+	 */
+	public function hasImported(Restaurant $res){
+		$query = "SELECT id FROM restaurant WHERE name = '{$res->getName()}' OR hittaId ='{$res->getHittaId()}' LIMIT 1";
+		if (!$result = $this->mysqli->query($query))
+			die($this->mysqli->error);
+		else {
+			if ($this->mysqli->affected_rows == 1) {
+				return true;
+			}
 
+		}
+		return false;
+
+	}
+
+	/**
+	 * update the coordinates
+	 *
+	 * @param int $id
+	 * @param float $lat
+	 * @param float $longi
+	 * @return boolean
+	 */
+	public function updateCoordinates($id, $lat, $longi){
+		$query ="UPDATE restaurant SET latitude = '$lat', longitude = '$longi' WHERE id = $id LIMIT 1";
+
+		if (!$this->mysqli->query($query))
+			die($this->mysqli->error);
+
+		return true;
+	}
+
+	public function getCoordinates(Restaurant $restaurant) {
+		##form address
+		$street = $restaurant->getStreet();
+		$mail_city = $restaurant->getMail_city();
+		$country = 'Sweden';
+		$address = urlencode($street . ' , ' . $mail_city . ' , ' . $country);
+
+		$url = MAP_BASE_URL . "?q=$address&output=json&oe=utf8&sensor=false&key=" . MAP_KEY;
+
+		$s = curl_init();
+
+		// set search options
+		curl_setopt($s,CURLOPT_URL, $url);
+		curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
+
+		$ret = curl_exec($s);
+
+		$pattern = ' /\"coordinates\"\: \[(.*?), (.*?), (.*?)\]/';
+		preg_match($pattern, $ret, $matches);
+		if (empty($matches)){
+			$pattern =  ' /\"coordinates\"\: \[(.*?), (.*?)\]/';
+			preg_match($pattern, $ret, $matches);
+
+		}
+
+		$restaurant->setLatitude($matches[1]);
+		$restaurant->setLongitude($matches[2]);
+
+		$this->updateCoordinates($restaurant->getId(), $restaurant->getLatitude(), $restaurant->getLongitude());
+
+	}
 }
 
 

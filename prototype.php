@@ -3,7 +3,7 @@
 	include_once (SERVER_ROOT."/include/header.php");
 ?>
 
-	
+
 		<div id="top">
 			<div class="center">
 				<div>
@@ -13,13 +13,13 @@
 						<h2>Get a suggestion on where to eat lunch today</h2>
 						<h3>Where are you ?</h3>
 						<form action="<?=WEB_ROOT?>/gen2.php" method="get">
-							<table cellspacing="3" cellpadding="0">
+							<table>
 								<tr>
 									<td><input id="input_query" type="text" name="location" /></td>
 									<td><input id="btn_getLunchPlace" type="submit" value="" /></td>
 								</tr>
 							</table>
-							
+
 						</form>
 						<em>For example: Street name 66</em>
 					</div>

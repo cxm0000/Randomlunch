@@ -21,6 +21,7 @@ class Restaurant
 	protected $hittaURL = '';
 	protected $approved = false;
 	protected $distance = 0;
+	protected $hittaId = '';
 
 	function __construct()
 	{
@@ -310,6 +311,17 @@ class Restaurant
 	{
 		return intval($this->distance * 1000);
 	}
+
+	public function getHittaId()
+	{
+		return $this->hittaId;
+	}
+
+	public function setHittaId($hittaId)
+	{
+		$this->hittaId = $hittaId;
+	}
+
 
 }
 

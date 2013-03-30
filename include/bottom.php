@@ -3,8 +3,8 @@
 		<table id="bottom_text_table">
 		<tr>
 			<td>What is Randomlunch?</td>
-			<td><a href="/">Randomlunch</a> gives you a suggestion where to each lunch every day. 
-			It randomizes all restaurants close to you and choose one for you. 
+			<td><a href="/">Randomlunch</a> gives you a suggestion where to each lunch every day.
+			It randomizes all restaurants close to you and choose one for you.
 			(For now, we only have restaurants info in <em>G&ouml;teborg</em>, but more coming soon.)</td>
 		</tr>
 		<tr>
@@ -16,12 +16,12 @@
 			<td><a href="http://blog.xiaomingcai.com/" target="blank">Ming</a> had the great idea and then <a href="http://www.asdasd.net" target="blank">Niklas</a> & <a href="http://www.josefineottosson.se" target="blank">Josefine</a> joined. Please visit our sites/blogs to learn more.</td>
 		</tr>
 		<tr>
-			<td colspan="2"><address>Feel FREE to contact us <a href="mailto: givemelunch@randomlunch.se">givemelunch@randomlunch.se</a>  &copy;Randomlunch.se 2009  </address></td>
+			<td colspan="2"><address>Feel FREE to contact us <a href="mailto:givemelunch@randomlunch.se">givemelunch@randomlunch.se</a>  &copy;Randomlunch.se 2009  </address></td>
 		</tr>
 		</table>
 
 		</div>
-		
+
 </div>
 
 <script type="text/javascript">
