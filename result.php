@@ -21,8 +21,11 @@ include_once (SERVER_ROOT . "/class/Location.php");
 		<meta name="revisit-after" content="2 days">
 		<meta name="robots" content="index, follow">
 		<link rel="stylesheet" type="text/css" href="<?=WEB_ROOT?>/css/style.css" media="all">
-		<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAZ4js3UVwf9LegxeHjyaWzxRFY7V_zappoRjfJmHN1m_LIwFKTRSkqZWo8dPAs-Zszfc7lWpKY6Jp4w" type="text/javascript"></script>
+
 		<!-- According to the Google Maps API Terms of Service you are required display a Google map when using the Google Maps API. see: http://code.google.com/apis/maps/terms.html -->
+		<script type="text/javascript"
+			src="https://maps.googleapis.com/maps/api/js?key=<?=MAP_KEY?>&sensor=false">
+		</script>
     	<script type="text/javascript" src="<?=WEB_ROOT?>/js/script.js"></script>
 
 <script type="text/javascript">
@@ -33,14 +36,12 @@ include_once (SERVER_ROOT . "/class/Location.php");
 
 		<?php
 		if (isset($_SESSION['rest'])) {
-			//var_dump($_SESSION['from']);die;
-			$restaurant = unserialize($_SESSION['rest']);
-			$from = unserialize($_SESSION['from']);
-			//var_dump($from);
-			//var_dump($from->getLongitude());
-			//var_dump($restaurant);die;
-			echo "showResult({$from->getLongitude()}, {$from->getLatitude()}, {$restaurant->getLongitude()}, {$restaurant->getLatitude()});";
-			//echo "showResult(11.9551420211792, 57.69321977978046, {$restaurant->getLatitude()}, {$restaurant->getLongitude()});";
+
+			$restaurant = json_decode($_SESSION['rest']);
+			$from = json_decode($_SESSION['from']);
+
+			echo "showResult({$from->latitude},{$from->longitude}, {$restaurant->latitude}, {$restaurant->longitude});";
+
 		}
 		?>
 			   //getDirections();
@@ -49,46 +50,40 @@ include_once (SERVER_ROOT . "/class/Location.php");
 	function showResult(location1_lat, location1_lon, location2_lat, location2_lon) {
 		try
 		{
+			var myLocation = new google.maps.LatLng(location1_lat, location1_lon);
+			var toLocation = new google.maps.LatLng(location2_lat, location2_lon);
 
-			var glatlng1 = new GLatLng(location1_lat, location1_lon);
-			var glatlng2 = new GLatLng(location2_lat, location2_lon);
-			//var glatlng1 = new GLatLng(location1_lon, location1_lat);
-			//var glatlng2 = new GLatLng(location2_lon, location2_lat);
+			var mapOptions = {
+				center: new google.maps.LatLng(location1_lat, location1_lon),
+				zoom: 13
+			};
 
-			var miledistance = glatlng1.distanceFrom(glatlng2, 3959).toFixed(1);
-			var kmdistance = (miledistance * 1.609344).toFixed(1);
+			var map = new google.maps.Map(
+				document.getElementById("map_canvas"),
+				mapOptions
+			);
 
-			var defaultTravelMode = "G_TRAVEL_MODE_WALKING";
-			var defaultLocale = "sv_SE";
+			var directionsService = new google.maps.DirectionsService();
+			var directionsDisplay = new google.maps.DirectionsRenderer();
 
-			map = new GMap2(document.getElementById("map_canvas"));
-			map.setCenter(glatlng2, 13);
+			var request = {
+				origin: myLocation,
+				destination: toLocation,
+				travelMode: google.maps.TravelMode.WALKING,
+				unitSystem: google.maps.UnitSystem.METRIC
+			};
 
-			directions = new GDirections(map, null);
-			/*	 GEventListener listener = GEvent.addListener(directions, 'load',new
-			 GEventHandler(){
-		//using prototype, u can use any other to attach event
-		alert(directions.getDistance().meters);
-		//display results
-		});
-			 */
-			var gString = 'from: ' + location1_lon +',' + location1_lat + ' to:' + location2_lon +',' + location2_lat;
+			directionsDisplay.setMap(map);
+			directionsService.route(request, function(result, status) {
+				if (status == google.maps.DirectionsStatus.OK) {
+					directionsDisplay.setDirections(result);
+				}
+			});
 
-			//			 var gString = 'from: <?= $_SESSION['location'] ?>, sweden to:<?= (isset($restaurant)) ? $restaurant->getStreet() : '' ?>, sweden';
-
-			var queryOptions = {"locale": defaultLocale, "travelMode": defaultTravelMode};
-
-			directions.load(gString, queryOptions);
-
-			map.setUIToDefault();
-
-		}
-		catch (error)
-		{
+		} catch (error) {
 			alert(error);
 		}
 	}
-
 </script>
 
 </head>
@@ -107,18 +102,18 @@ if (isset($restaurant)) {
 						<div id="result">
 							<table>
 								<tr>
-									<td class="header">Name</td><td><?php echo $restaurant->getName() ?></td>
+									<td class="header">Name</td><td><?php echo $restaurant->name ?></td>
 								</tr>
 								<tr>
-									<td class="header">City</td><td><?php echo $restaurant->getMail_City() ?></td>
+									<td class="header">City</td><td><?php echo $restaurant->mailCity ?></td>
 								</tr>
 								<tr>
-									<td class="header">Type</td><td><?php echo $restaurant->getType() ?></td>
+									<td class="header">Type</td><td><?php echo $restaurant->type ?></td>
 								</tr>
 								<tr>
-									<td class="header">Phone</td><td><?php echo $restaurant->getPhone() ?></td>
+									<td class="header">Phone</td><td><?php echo $restaurant->phone ?></td>
 								</tr>
-								<? $site = $restaurant->getWebsite(); ?>
+								<? $site = $restaurant->website; ?>
 								<? if (!empty($site)): ?>
 									<tr>
 										<td class="header">Web</td><td><?php echo $site ?></td>
@@ -150,7 +145,7 @@ else {
 		<div id="bottom">
 			<div class="center">
 				<p class="map_result">The map shows you how to drive to the restaurant.</p>
-				<p class="map_result">From where you are now you have exactly<span class="distinguish"> <?php echo $restaurant->getDistanceInMeters() ?> </span>m to this restaurant.</p>
+				<p class="map_result">From where you are now you have exactly<span class="distinguish"> <?php echo $restaurant->distanceInMeters ?> </span>m to this restaurant.</p>
 				<div id="map_canvas" style="width: 800px;height:600px;"></div>
 			</div>
 		</div>

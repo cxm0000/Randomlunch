@@ -322,6 +322,25 @@ class Restaurant
 		$this->hittaId = $hittaId;
 	}
 
+	public function toJSON()
+	{
+		return json_encode(
+				array(
+					'id' => $this->getId(),
+					'name' => utf8_encode($this->getName()),
+					'city' => utf8_encode($this->getCity()),
+					'hittaUrl' => $this->getHittaURL(),
+					'latitude' => $this->getLatitude(),
+					'longitude' => $this->getLongitude(),
+					'phone' => $this->getPhone(),
+					'website' => $this->getWebsite(),
+					'street' => utf8_encode($this->getStreet()),
+					'type' => $this->getType(),
+					'mailCity' => utf8_encode($this->getMail_city()),
+					'distanceInMeters' => $this->getDistanceInMeters(),
+		));
+	}
+
 
 }
 

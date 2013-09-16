@@ -61,10 +61,10 @@
 				$random_index = Randomizer::generateNo($range_max);
 
 				$random_rest = $possible_rests[$random_index];
+//var_dump($random_rest);die;
 
-				//store the restuarant into session value
-				$_SESSION['from'] = serialize($searchGeoLocation);
-				$_SESSION['rest'] = serialize($random_rest);
+				$_SESSION['from'] = $searchGeoLocation->toJSON();
+				$_SESSION['rest'] = $random_rest->toJSON();
 			}else
 				//no possible restaurant
 				$_SESSION['result'] = 'Sorry, we can not find any restaurant within ' .VALID_RANGE . ' km, please try specify your address more detailed.';
