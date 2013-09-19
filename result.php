@@ -96,7 +96,7 @@ if (isset($restaurant)) {
 	?>
 
 				<div>
-					<a href="prototype.php"><img id="confused_smiley" src="image/site/smiley_blue_happy.png" alt="confused"></a>
+					<a href="/"><img id="confused_smiley" src="image/site/smiley_blue_happy.png" alt="confused"></a>
 					<div id="front">
 						<h2>We think you should go here - </h2>
 						<div id="result">
@@ -116,7 +116,7 @@ if (isset($restaurant)) {
 								<? $site = $restaurant->website; ?>
 								<? if (!empty($site)): ?>
 									<tr>
-										<td class="header">Web</td><td><?php echo $site ?></td>
+										<td class="header">Web</td><td><a href="http://<?php echo $site ?>"><?php echo $site ?></a></td>
 									</tr>
 								<? endif; ?>
 							</table>
@@ -149,7 +149,16 @@ else {
 				<div id="map_canvas" style="width: 800px;height:600px;"></div>
 			</div>
 		</div>
-
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	try {
+		var pageTracker = _gat._getTracker("UA-3987274-4");
+		pageTracker._trackPageview();
+	} catch(err) {}
+</script>
 	</body>
 	</html>
 <?php else: ?>
