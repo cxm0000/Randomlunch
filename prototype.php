@@ -27,6 +27,9 @@
 	</div>
 </div>
 
+<script>
+	getLocation();
+</script>
 <?php
 	include_once (SERVER_ROOT . "/include/bottom.php");
 ?>
