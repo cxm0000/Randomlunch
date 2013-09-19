@@ -41,7 +41,7 @@
 				$toGeoLocation = array($restaurant->getLatitude(), $restaurant->getLongitude());
 
 
-				$distance = Calculator::distanceFromCoordinates(
+				$distance = Calculator::vincentyGreatCircleDistance(
 					$searchGeoLocation->getLatitude(),
 					$searchGeoLocation->getLongitude(),
 					$restaurant->getLatitude(),
