@@ -7,9 +7,15 @@ class DbConnection
 
 	private function __construct()
 	{
-		self::$instance = new mysqli("localhost", DB_USER, DB_PASSWORD, DB_CHOSEN);
+		$dsn = "mysql:dbname=" . DB_CHOSEN . ";host=127.0.0.1";
+//		self::$instance = new mysqli("localhost", DB_USER, DB_PASSWORD, DB_CHOSEN);
+		self::$instance = new PDO($dsn, DB_USER, DB_PASSWORD);
 	}
 
+	/**
+	 *
+	 * @return PDO
+	 */
 	public static function getInstance()
 	{
 		if (!isset(self::$instance)) new DbConnection();

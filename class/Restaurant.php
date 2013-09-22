@@ -18,10 +18,9 @@ class Restaurant
 	protected $has_lunch = 0;
 	protected $has_dinner = 0;
 	protected $type = 0;
-	protected $hittaURL = '';
 	protected $approved = false;
 	protected $distance = 0;
-	protected $hittaId = '';
+	protected $imageUrl = '';
 
 	function __construct()
 	{
@@ -82,14 +81,6 @@ class Restaurant
 	public function getHas_lunch()
 	{
 		return $this->has_lunch;
-	}
-
-	/**
-	 * @return unknown
-	 */
-	public function getHittaURL()
-	{
-		return $this->hittaURL;
 	}
 
 	/**
@@ -172,6 +163,7 @@ class Restaurant
 	public function setId($id)
 	{
 		$this->id = $id;
+		return $this;
 	}
 
 	/**
@@ -180,6 +172,7 @@ class Restaurant
 	public function setApproved($approved)
 	{
 		$this->approved = $approved;
+		return $this;
 	}
 
 	/**
@@ -188,6 +181,7 @@ class Restaurant
 	public function setCity($city)
 	{
 		$this->city = $city;
+		return $this;
 	}
 
 	/**
@@ -196,6 +190,7 @@ class Restaurant
 	public function setFax($fax)
 	{
 		$this->fax = $fax;
+		return $this;
 	}
 
 	/**
@@ -204,6 +199,7 @@ class Restaurant
 	public function setHas_breakfast($has_breakfast)
 	{
 		$this->has_breakfast = $has_breakfast;
+		return $this;
 	}
 
 	/**
@@ -212,6 +208,7 @@ class Restaurant
 	public function setHas_dinner($has_dinner)
 	{
 		$this->has_dinner = $has_dinner;
+		return $this;
 	}
 
 	/**
@@ -220,14 +217,7 @@ class Restaurant
 	public function setHas_lunch($has_lunch)
 	{
 		$this->has_lunch = $has_lunch;
-	}
-
-	/**
-	 * @param unknown_type $hittaURL
-	 */
-	public function setHittaURL($hittaURL)
-	{
-		$this->hittaURL = $hittaURL;
+		return $this;
 	}
 
 	/**
@@ -236,6 +226,7 @@ class Restaurant
 	public function setLatitude($latitude)
 	{
 		$this->latitude = $latitude;
+		return $this;
 	}
 
 	/**
@@ -244,6 +235,7 @@ class Restaurant
 	public function setLongitude($longitude)
 	{
 		$this->longitude = $longitude;
+		return $this;
 	}
 
 	/**
@@ -252,6 +244,7 @@ class Restaurant
 	public function setMail_city($mail_city)
 	{
 		$this->mail_city = $mail_city;
+		return $this;
 	}
 
 	/**
@@ -260,6 +253,7 @@ class Restaurant
 	public function setName($name)
 	{
 		$this->name = $name;
+		return $this;
 	}
 
 	/**
@@ -268,6 +262,7 @@ class Restaurant
 	public function setPhone($phone)
 	{
 		$this->phone = $phone;
+		return $this;
 	}
 
 	/**
@@ -276,6 +271,7 @@ class Restaurant
 	public function setStreet($street)
 	{
 		$this->street = $street;
+		return $this;
 	}
 
 	/**
@@ -284,6 +280,7 @@ class Restaurant
 	public function setType($type)
 	{
 		$this->type = $type;
+		return $this;
 	}
 
 	/**
@@ -292,6 +289,7 @@ class Restaurant
 	public function setWebsite($website)
 	{
 		$this->website = $website;
+		return $this;
 	}
 
 	/**
@@ -300,11 +298,13 @@ class Restaurant
 	public function setZip($zip)
 	{
 		$this->zip = $zip;
+		return $this;
 	}
 
 	public function setDistance($distance)
 	{
 		$this->distance = $distance;
+		return $this;
 	}
 
 	public function getDistanceInMeters()
@@ -312,14 +312,15 @@ class Restaurant
 		return intval($this->distance * 1000);
 	}
 
-	public function getHittaId()
+	public function getImageUrl()
 	{
-		return $this->hittaId;
+		return $this->imageUrl;
 	}
 
-	public function setHittaId($hittaId)
+	public function setImageUrl($imageUrl)
 	{
-		$this->hittaId = $hittaId;
+		$this->imageUrl = $imageUrl;
+		return $this;
 	}
 
 	public function toJSON()
@@ -329,7 +330,6 @@ class Restaurant
 					'id' => $this->getId(),
 					'name' => utf8_encode($this->getName()),
 					'city' => utf8_encode($this->getCity()),
-					'hittaUrl' => $this->getHittaURL(),
 					'latitude' => $this->getLatitude(),
 					'longitude' => $this->getLongitude(),
 					'phone' => $this->getPhone(),
