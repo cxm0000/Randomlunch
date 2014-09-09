@@ -21,7 +21,10 @@ class Restaurant
 	protected $approved = false;
 	protected $distance = 0;
 	protected $imageUrl = '';
-
+	
+	protected $googlePlaceId = 0;
+	protected $googleAddress = '';
+	
 	function __construct()
 	{
 
@@ -322,6 +325,22 @@ class Restaurant
 		$this->imageUrl = $imageUrl;
 		return $this;
 	}
+	
+	public function getGooglePlaceId() {
+		return $this->googlePlaceId;
+	}
+
+	public function setGooglePlaceId($googlePlaceId) {
+		$this->googlePlaceId = $googlePlaceId;
+	}
+	
+	public function getGoogleAddress() {
+		return $this->googleAddress;
+	}
+
+	public function setGoogleAddress($googleAddress) {
+		$this->googleAddress = $googleAddress;
+	}
 
 	public function toJSON()
 	{
@@ -338,10 +357,33 @@ class Restaurant
 					'type' => $this->getType(),
 					'mailCity' => utf8_encode($this->getMail_city()),
 					'distanceInMeters' => $this->getDistanceInMeters(),
+					'imageUrl' => $this->getImageUrl(),
+					'formattedAddress' => $this->getGoogleAddress()
 		));
 	}
+	
+//	public function getDetails()
+//	{
+//		$placeApiUrlPattern = '%s/json?placeid=%s&key=%s';
+//		$apiURL = sprintf(
+//			$placeApiUrlPattern,
+//			PLACE_DETAILS_URL,
+//			$this->getGooglePlaceId(),
+//			MAP_KEY
+//		);
+//
+//		$s = curl_init();
+//
+//		// set search options
+//		curl_setopt($s,CURLOPT_URL, $apiURL);
+//		curl_setopt($s, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=UTF-8'));
+//		curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
+//
+//		$ret = curl_exec($s);
+//
+//		$retJson = json_decode($ret);
+//		$results = $retJson->results;
+//	}
 
 
 }
-
-?>

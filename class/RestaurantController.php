@@ -107,15 +107,17 @@ class RestaurantController {
 		$row = $result->fetchObject();
 
 		if(!$row) {
-			echo "No city: " . $res->getType() . " found. Adding it as a new city ...<br/>";
+			echo "No city: " . $res->getCity() . " found. Adding it as a new city ...<br/>";
 			$cityId = $this->saveNewRestaurantCity(strtolower($res->getCity()));
-			echo "New city id: {$typeId}...<br/>";
+			echo "New city id: {$cityId}...<br/>";
 			$res->setCity($cityId);
 		} else {
 			$res->setCity($row->id);
 		}
 
-		$query = "INSERT INTO restaurant(
+		$restaurant = $this->getOneRestaurant($res->getName(), $res->getLatitude(), $res->getLongitude());
+		if (!$restaurant instanceof Restaurant) {
+			$query = "INSERT INTO restaurant(
 					name,
 					city,
 					zipcode,
@@ -148,70 +150,72 @@ class RestaurantController {
 				)";
 
 
-		/** @var PDOStatement **/
-		$sth = $this->pdoConnection->prepare($query);
+			/** @var PDOStatement **/
+			$sth = $this->pdoConnection->prepare($query);
 
-		$sth->bindValue(":name", $res->getName(), PDO::PARAM_STR);
-		$sth->bindValue(":city", $res->getCity(), PDO::PARAM_STR);
-		$sth->bindValue(":zipcode", $res->getZip(), PDO::PARAM_STR);
-		$sth->bindValue(":street", $res->getStreet(), PDO::PARAM_STR);
-		$sth->bindValue(":phone", $res->getPhone(), PDO::PARAM_STR);
-		$sth->bindValue(":fax", $res->getFax(), PDO::PARAM_STR);
-		$sth->bindValue(":website", $res->getWebsite(), PDO::PARAM_STR);
-		$sth->bindValue(":latitude", $res->getLatitude());
-		$sth->bindValue(":longitude", $res->getLongitude());
-		$sth->bindValue(":hasbreakfast", $res->getHas_breakfast(), PDO::PARAM_INT);
-		$sth->bindValue(":haslunch", $res->getHas_lunch(), PDO::PARAM_INT);
-		$sth->bindValue(":hasdinner", $res->getHas_dinner(), PDO::PARAM_INT);
-		$sth->bindValue(":approved", 1, PDO::PARAM_INT);
-		$sth->bindValue(":imageUrl", $res->getImageUrl(), PDO::PARAM_STR);
-
-
-		$result = $sth->execute();
+			$sth->bindValue(":name", $res->getName(), PDO::PARAM_STR);
+			$sth->bindValue(":city", $res->getCity(), PDO::PARAM_STR);
+			$sth->bindValue(":zipcode", $res->getZip(), PDO::PARAM_STR);
+			$sth->bindValue(":street", $res->getStreet(), PDO::PARAM_STR);
+			$sth->bindValue(":phone", $res->getPhone(), PDO::PARAM_STR);
+			$sth->bindValue(":fax", $res->getFax(), PDO::PARAM_STR);
+			$sth->bindValue(":website", $res->getWebsite(), PDO::PARAM_STR);
+			$sth->bindValue(":latitude", $res->getLatitude());
+			$sth->bindValue(":longitude", $res->getLongitude());
+			$sth->bindValue(":hasbreakfast", $res->getHas_breakfast(), PDO::PARAM_INT);
+			$sth->bindValue(":haslunch", $res->getHas_lunch(), PDO::PARAM_INT);
+			$sth->bindValue(":hasdinner", $res->getHas_dinner(), PDO::PARAM_INT);
+			$sth->bindValue(":approved", 1, PDO::PARAM_INT);
+			$sth->bindValue(":imageUrl", $res->getImageUrl(), PDO::PARAM_STR);
 
 
-		if (!$result) {
-			print_r($sth->errorInfo());
-			print_r($res->getImageUrl());
-			throw new Exception("Can not save the restaurant.<br/>");
-		} else {
-			$rest_id = $this->pdoConnection->lastInsertId();
-			$res->setId($rest_id);
-			echo "Checking type:" . $res->getType() . "<br/>";
-			$query = "SELECT id FROM restauranttype WHERE name = '{$res->getType()}' LIMIT 1";
-			$result = $this->pdoConnection->query($query);
+			$result = $sth->execute();
 
-			$row = $result->fetchObject();
 
-			if(!$row) {
-				echo "No type:" . $res->getType() . " found. Adding it as a new type ...<br/>";
-				$typeId = $this->saveNewRestaurantType(strtolower($res->getType()));
-				echo "New type id {$typeId}...<br/>";
-//					throw new Exception("We do not support this type yet, plz come back later. Type name:" . $res->getType());
+			if (!$result) {
+				print_r($sth->errorInfo());
+				print_r($res->getImageUrl());
+				throw new Exception("Can not save the restaurant.<br/>");
 			} else {
-				$typeId = $row->id;
+				$rest_id = $this->pdoConnection->lastInsertId();
+				$res->setId($rest_id);
+				echo "Checking type:" . $res->getType() . "<br/>";
+				$query = "SELECT id FROM restauranttype WHERE name = '{$res->getType()}' LIMIT 1";
+				$result = $this->pdoConnection->query($query);
+
+				$row = $result->fetchObject();
+
+				if(!$row) {
+					echo "No type:" . $res->getType() . " found. Adding it as a new type ...<br/>";
+					$typeId = $this->saveNewRestaurantType(strtolower($res->getType()));
+					echo "New type id {$typeId}...<br/>";
+	//					throw new Exception("We do not support this type yet, plz come back later. Type name:" . $res->getType());
+				} else {
+					$typeId = $row->id;
+				}
+
+				$query = sprintf("INSERT INTO restauranttype_join_restaurant (
+				restauranttype_id,
+				restaurant_id
+
+				) VALUES (
+				'%d',
+				'%d'
+				)",
+				$typeId,
+				$rest_id
+				);
+
+				if (!$this->pdoConnection->query($query)) {
+					var_dump($query);
+					throw new Exception($this->pdoConnection->errorInfo());
+				} else {
+					return true;
+				}
+
 			}
-
-			$query = sprintf("INSERT INTO restauranttype_join_restaurant (
-			restauranttype_id,
-			restaurant_id
-
-			) VALUES (
-			'%d',
-			'%d'
-			)",
-			$typeId,
-			$rest_id
-			);
-
-			if (!$this->pdoConnection->query($query)) {
-				var_dump($query);
-				throw new Exception($this->pdoConnection->errorInfo());
-			} else {
-				return true;
-			}
-
 		}
+
 
 	}
 
@@ -253,34 +257,66 @@ class RestaurantController {
 	 * could be nice if we in the future would have a search funtion
 	 * before they add a new one they could search for it if it exists
 	 */
-	public function getOneRestaurant($name){
-		$query = "SELECT r.*, c.name as city_name FROM restaurant r JOIN city c ON r.city = c.id WHERE r.name ='{$name}' ";
+	public function getOneRestaurant($name, $lat, $long){
+
+			$query = "SELECT
+						r.*,
+						rt.name AS typename,
+						c.name AS cityname
+				FROM
+						restaurant r
+				INNER JOIN
+						restauranttype_join_restaurant rr
+				ON (
+						r.id = rr.restaurant_id
+					)
+				INNER JOIN
+						restauranttype rt
+				ON (
+						rr.restauranttype_id = rt.id
+					)
+				INNER JOIN
+					city c
+				ON (
+					c.id = r.city
+				)
+				WHERE
+					r.name = '{$name}'
+				AND
+					r.latitude = {$lat}
+				AND
+					r.longitude = {$long}
+				LIMIT 1";
 
 		$result = $this->pdoConnection->query($query);
-		while ($row = $result->fetchObject()) {
-			$restaurant = new Restaurant();
-			$restaurant->setId($row->id);
-			$restaurant->setName($row->name);
-			$restaurant->setLatitude($row->latitude);
-			$restaurant->setLongitude($row->longitude);
-			$restaurant->setWebsite($row->website);
-			$restaurant->setCity($row->city);
-			$restaurant->setFax($row->fax);
-			$restaurant->setHas_breakfast($row->hasbreakfast);
-			$restaurant->setHas_dinner($row->hasdinner);
-			$restaurant->setHas_lunch($row->haslunch);
-			$restaurant->setMail_city($row->mailcity);
-			$restaurant->setPhone($row->phone);
-			$restaurant->setStreet($row->street);
-			$restaurant->setType($row->type_name);
-			$restaurant->setZip($row->zipcode);
-			$restaurant->setImageUrl($row->imageUrl);
+		if ($result) {
+			while ($row = $result->fetchObject()) {
+				$restaurant = new Restaurant();
+				$restaurant->setId($row->id);
+				$restaurant->setName($row->name);
+				$restaurant->setLatitude($row->latitude);
+				$restaurant->setLongitude($row->longitude);
+				$restaurant->setWebsite($row->website);
+				$restaurant->setCity($row->city);
+				$restaurant->setFax($row->fax);
+				$restaurant->setHas_breakfast($row->hasbreakfast);
+				$restaurant->setHas_dinner($row->hasdinner);
+				$restaurant->setHas_lunch($row->haslunch);
+				$restaurant->setMail_city($row->mailcity);
+				$restaurant->setPhone($row->phone);
+				$restaurant->setStreet($row->street);
+				$restaurant->setType($row->typename);
+				$restaurant->setZip($row->zipcode);
+				$restaurant->setImageUrl($row->imageUrl);
 
+			}
+			unset($result);
+			unset($row);
+
+			return $restaurant;
 		}
-		unset($result);
-		unset($row);
 
-		return $restaurant;
+		return false;
 	}
 
 	/*

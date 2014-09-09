@@ -13,7 +13,7 @@
 		</tr>
 		<tr>
 			<td>Who did this site?</td>
-			<td><a href="http://blog.xiaomingcai.com/" target="blank">Ming</a> had the great idea and then <a href="http://www.asdasd.net" target="blank">Niklas</a> & <a href="http://www.josefineottosson.se" target="blank">Josefine</a> joined. Please visit our sites/blogs to learn more.</td>
+			<td><a href="http://blog.xiaomingcai.com/" target="blank">Ming</a> had the great idea and then <a href="http://www.asdasd.net" target="blank">Niklas</a> & <a href="http://www.josefineottosson.se" target="blank">Josefine</a> joined. Please visit our <a href="http://www.xiaomingcai.com/blog/randomlunch/" target="blank">sites/blogs</a> to learn more.</td>
 		</tr>
 		<tr>
 			<td colspan="2"><address>Feel FREE to contact us <a href="mailto:givemelunch@randomlunch.se">givemelunch@randomlunch.se</a>  &copy;Randomlunch.se 2009  </address></td>

@@ -25,16 +25,16 @@
 		$restController = new RestaurantController();
 		$searchGeoLocation = null;
 		##get all restaurants
-		$all_rests = $restController->getAllResturant();
+//		$all_rests = $restController->getAllResturant();
 
 		$searchGeoLocation = new Location($searchLocation);
 
 		##check if there are coordinates of the location
 		if(!($searchGeoLocation->getLatitude() == 0 && $searchGeoLocation->getLongitude() == 0)){
 			##get distance between the current place and all restaurants, store possible ones in an array
-			$possible_rests = array();
+			$possible_rests = $searchGeoLocation->getNearByPlaces();
 
-			foreach ($all_rests as $restaurant){
+			foreach ($possible_rests as $restaurant){
 
 				##calculate distance
 				$fromGeoLocation = array($searchGeoLocation->getLatitude(), $searchGeoLocation->getLongitude());
@@ -50,7 +50,7 @@
 
 				if ($distance <= VALID_RANGE && $distance > 0){
 					$restaurant->setDistance($distance);
-					$possible_rests[] = $restaurant;
+//					$possible_rests[] = $restaurant;
 				}
 
 			}
@@ -61,7 +61,7 @@
 				$random_index = Randomizer::generateNo($range_max);
 
 				$random_rest = $possible_rests[$random_index];
-//var_dump($random_rest);die;
+//var_dump(json_decode($random_rest->toJSON()));die;
 
 				$_SESSION['from'] = $searchGeoLocation->toJSON();
 				$_SESSION['rest'] = $random_rest->toJSON();

@@ -102,21 +102,23 @@ if (isset($restaurant)) {
 						<div id="result">
 							<table>
 								<tr>
-									<td class="header">Name</td><td><?php echo $restaurant->name ?></td>
+									<td class="header">Name</td><td><?php echo utf8_decode($restaurant->name) ?></td>
 								</tr>
-								<tr>
-									<td class="header">City</td><td><?php echo $restaurant->mailCity ?></td>
-								</tr>
-								<tr>
+<!--								<tr>
 									<td class="header">Type</td><td><?php echo $restaurant->type ?></td>
-								</tr>
+								</tr>-->
+								<?php if (isset($restaurant->formattedAddress)) {?>
 								<tr>
-									<td class="header">Phone</td><td><?php echo $restaurant->phone ?></td>
+									<td class="header">Address:</td><td><?php echo $restaurant->formattedAddress; ?></td>
 								</tr>
+								<?php } ?>
+<!--								<tr>
+									<td class="header">Phone</td><td><?php echo $restaurant->phone ?></td>
+								</tr>-->
 								<? $site = $restaurant->website; ?>
 								<? if (!empty($site)): ?>
 									<tr>
-										<td class="header">Web</td><td><a href="http://<?php echo $site ?>"><?php echo $site ?></a></td>
+										<td class="header">Web</td><td><a href="<?php echo $site ?>" target="_blank"><?php echo urldecode($site) ?></a></td>
 									</tr>
 								<? endif; ?>
 							</table>
